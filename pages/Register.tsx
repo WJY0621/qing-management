@@ -12,7 +12,23 @@ const Register: React.FC = () => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const { register } = useAppState();
+  const { register, isLoggedIn, isLoading } = useAppState();
+
+  React.useEffect(() => {
+    if (isLoggedIn && !isLoading) {
+      navigate('/dashboard');
+    }
+  }, [isLoggedIn, isLoading, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      </div>
+    );
+  }
 
   const handleRegister = async () => {
     if (!account || !password || !confirmPassword) {
