@@ -197,9 +197,37 @@ const WeightLog: React.FC = () => {
     return logs.map(l => ({ name: l.date.split('-')[1], weight: l.weight }));
   }, [weightLogs, activePeriod]);
 
-  const lastWeight = weightLogs.length > 0 ? weightLogs[weightLogs.length - 1].weight : null;
-  const prevWeight = weightLogs.length > 1 ? weightLogs[weightLogs.length - 2].weight : lastWeight;
-  const diff = lastWeight !== null && prevWeight !== null ? (lastWeight - prevWeight).toFixed(1) : '--';
+  const diff = useMemo(() => {
+    if (weightLogs.length < 2) return '--';
+
+    const sortedLogs = [...weightLogs].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const latestLog = sortedLogs[sortedLogs.length - 1];
+
+    const targetDate = new Date(latestLog.date);
+    if (activePeriod === '月') targetDate.setDate(targetDate.getDate() - 30);
+    else if (activePeriod === '年') targetDate.setDate(targetDate.getDate() - 365);
+    else targetDate.setDate(targetDate.getDate() - 7);
+
+    let compareLog = sortedLogs.find(l => l.date === targetDate.toISOString().split('T')[0]);
+
+    if (!compareLog) {
+      const firstLog = sortedLogs[0];
+      const firstDate = new Date(firstLog.date);
+
+      if (targetDate < firstDate) {
+        compareLog = firstLog;
+      } else {
+        const closestLog = sortedLogs.filter(l => new Date(l.date) <= targetDate).pop();
+        compareLog = closestLog || firstLog;
+      }
+    }
+
+    if (compareLog && compareLog.date === latestLog.date && sortedLogs.length > 1) {
+      compareLog = sortedLogs[0];
+    }
+
+    return (latestLog.weight - compareLog.weight).toFixed(1);
+  }, [weightLogs, activePeriod]);
 
   return (
     <Layout mainClassName="bg-[#f0f4f9]">
