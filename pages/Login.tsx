@@ -44,7 +44,17 @@ const InstallPrompt: React.FC = () => {
   // Only show button if we captured the prompt (Android/PC) OR if it is iOS
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
   if (isStandalone) return null;
-  if (!deferredPrompt && !isIOS) return null;
+  // if (!deferredPrompt && !isIOS) return null; // <-- Remove this strict check
+
+  // New logic: Always show the button on mobile (Android/iOS) or if prompt is available on PC
+  // But for iOS specifically, we rely on the userAgent check.
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Show if:
+  // 1. We have a native install prompt (Chrome/Edge/Android)
+  // 2. OR it's iOS (show guide)
+  // 3. OR it's Android (even if prompt missing, show guide or try)
+  if (!deferredPrompt && !isIOS && !isMobile) return null;
 
   return (
     <>
