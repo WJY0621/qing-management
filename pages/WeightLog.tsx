@@ -301,16 +301,18 @@ const WeightLog: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-[#f8fbff] border border-slate-200/50 rounded-[2rem] p-5 flex items-center justify-between shadow-sm">
               <div>
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">体重变化</p>
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  {activePeriod === '周' ? '7天' : (activePeriod === '月' ? '30天' : '1年')}变化
+                </p>
                 <div className="flex items-baseline gap-1">
-                  <span className={`text-xl font-black ${Number(diff) > 0 ? 'text-orange-500' : 'text-emerald-600'}`}>
+                  <span className={`text-xl font-black ${Number(diff) > 0 ? 'text-orange-500' : (Number(diff) < 0 ? 'text-emerald-600' : 'text-slate-500')}`}>
                     {Number(diff) > 0 ? `+${diff}` : diff}
                   </span>
                   <span className="text-[9px] font-bold text-slate-400">kg</span>
                 </div>
               </div>
-              <span className={`material-symbols-outlined ${Number(diff) > 0 ? 'text-orange-500' : 'text-emerald-600'} font-light text-xl`}>
-                {Number(diff) > 0 ? 'trending_up' : 'trending_down'}
+              <span className={`material-symbols-outlined ${Number(diff) > 0 ? 'text-orange-500' : (Number(diff) < 0 ? 'text-emerald-600' : 'text-slate-500')} font-light text-xl`}>
+                {Number(diff) > 0 ? 'trending_up' : (Number(diff) < 0 ? 'trending_down' : 'remove')}
               </span>
             </div>
             <div className="bg-[#f8fbff] border border-slate-200/50 rounded-[2rem] p-5 flex items-center justify-between shadow-sm">
