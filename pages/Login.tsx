@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../state';
+import { Capacitor } from '@capacitor/core';
 
 // --- Inline InstallPrompt Component ---
 const InstallPrompt: React.FC = () => {
@@ -10,9 +11,13 @@ const InstallPrompt: React.FC = () => {
   const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
+    // Check if running in Capacitor native app OR PWA standalone mode
+    const isNative = Capacitor.isNativePlatform();
     const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
-    setIsStandalone(isInStandalone);
-    if (isInStandalone) return;
+    
+    setIsStandalone(isNative || isInStandalone);
+    
+    if (isNative || isInStandalone) return;
 
     const handler = (e: Event) => {
       e.preventDefault();
