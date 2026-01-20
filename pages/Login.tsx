@@ -151,6 +151,8 @@ const Login: React.FC = () => {
           </button>
         </div>
       </div>
+
+      <InstallPrompt />
     </div>
   );
 };
