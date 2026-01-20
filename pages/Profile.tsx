@@ -18,6 +18,8 @@ const Profile: React.FC = () => {
     if (val < 18.5) return { color: 'bg-blue-400', label: '偏瘦' };
     if (val < 24) return { color: 'bg-emerald-500', label: '正常' };
     return { color: 'bg-orange-500', label: '偏胖' };
+  }, [bmi]);
+
   const metabolicInfo = useMemo(() => {
     // Mifflin-St Jeor Equation
     const s = user.gender === 'MALE' ? 5 : -161;
