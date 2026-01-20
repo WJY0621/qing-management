@@ -64,6 +64,16 @@ const App: React.FC = () => {
             <Route path="/log" element={<ProtectedRoute><WeightLog /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/profile/edit" element={<ProtectedRoute><ProfileEditor /></ProtectedRoute>} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="recipes" element={<RecipeManagement />} />
+            </Route>
+
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </HashRouter>
