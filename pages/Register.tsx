@@ -50,7 +50,15 @@ const Register: React.FC = () => {
       await register(account, password);
       navigate('/onboarding');
     } catch (err: any) {
-      setError(err.message || '注册失败，请稍后重试');
+      console.error('Registration error:', err);
+      // Handle "User already registered" error from Supabase
+      if (err.message && (err.message.includes('already registered') || err.message.includes('User already exists'))) {
+        setError('该邮箱已被注册，请直接登录');
+      } else if (err.message && err.message.includes('Password should be at least')) {
+        setError('密码长度至少需要 6 位');
+      } else {
+        setError(err.message || '注册失败，请稍后重试');
+      }
     }
   };
 
