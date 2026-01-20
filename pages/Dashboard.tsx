@@ -117,6 +117,23 @@ const Dashboard: React.FC = () => {
                 <p className="text-[10px] font-black text-slate-400 tracking-[0.1em] uppercase">KCAL / DAY</p>
               </div>
             </div>
+
+            {/* Metabolic Rate Info */}
+            {metabolicInfo && (
+              <div className="mt-6 w-full bg-slate-50 rounded-2xl p-4 border border-slate-100/50">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">基础代谢估算</span>
+                  <span className="text-[10px] font-bold text-slate-400">仅供参考</span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xl font-black text-slate-700">~{metabolicInfo.tdee}</span>
+                  <span className="text-[10px] font-bold text-slate-400">kcal/day</span>
+                </div>
+                <p className="text-[9px] text-slate-400 mt-1 leading-relaxed">
+                  基于您身体数据估算的日常消耗热量（不含运动）。
+                </p>
+              </div>
+            )}
           </div>
         </section>
 

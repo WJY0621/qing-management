@@ -44,3 +44,23 @@ export const getCurrentUser = async () => {
   const { data: { user } } = await supabase.auth.getUser();
   return user;
 };
+
+export const resetPasswordForEmail = async (email: string) => {
+  // redirectTo should point to the page where user sets new password
+  // For local dev it might be http://localhost:3000/#/update-password
+  // For prod it depends on the site URL.
+  // We will assume the site handles the recovery link.
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/#/update-password',
+  });
+  if (error) throw error;
+  return data;
+};
+
+export const updatePassword = async (password: string) => {
+  const { data, error } = await supabase.auth.updateUser({
+    password: password
+  });
+  if (error) throw error;
+  return data;
+};

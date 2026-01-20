@@ -12,6 +12,8 @@ import RecipeEditor from './pages/RecipeEditor.tsx';
 import WeightLog from './pages/WeightLog.tsx';
 import Profile from './pages/Profile.tsx';
 import ProfileEditor from './pages/ProfileEditor.tsx';
+import ForgotPassword from './pages/ForgotPassword.tsx';
+import UpdatePassword from './pages/UpdatePassword.tsx';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoggedIn, isLoading } = useAppState();

@@ -156,6 +156,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setWeightLogs(updatedLogs);
   }, []);
 
+  const resetPassword = useCallback(async (email: string) => {
+    await authService.resetPasswordForEmail(email);
+  }, []);
+
+  const updatePassword = useCallback(async (password: string) => {
+    await authService.updatePassword(password);
+  }, []);
+
   const value = useMemo(() => ({
     user,
     recipes,
@@ -170,8 +178,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addRecipe,
     updateRecipe,
     deleteRecipe,
-    addWeightLog
-  }), [user, recipes, weightLogs, isLoggedIn, isLoading, login, logout, register, updateProfile, addRecipe, updateRecipe, deleteRecipe, addWeightLog]);
+    addWeightLog,
+    resetPassword,
+    updatePassword
+  }), [user, recipes, weightLogs, isLoggedIn, isLoading, login, logout, register, updateProfile, addRecipe, updateRecipe, deleteRecipe, addWeightLog, resetPassword, updatePassword]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

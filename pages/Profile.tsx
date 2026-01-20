@@ -18,7 +18,16 @@ const Profile: React.FC = () => {
     if (val < 18.5) return { color: 'bg-blue-400', label: '偏瘦' };
     if (val < 24) return { color: 'bg-emerald-500', label: '正常' };
     return { color: 'bg-orange-500', label: '偏胖' };
-  }, [bmi]);
+  const metabolicInfo = useMemo(() => {
+    // Mifflin-St Jeor Equation
+    const s = user.gender === 'MALE' ? 5 : -161;
+    const bmr = 10 * user.weight + 6.25 * user.height - 5 * user.age + s;
+    const tdee = bmr * 1.2; // Sedentary baseline
+
+    return {
+      tdee: Math.round(tdee)
+    };
+  }, [user]);
 
   return (
     <Layout>
@@ -73,6 +82,15 @@ const Profile: React.FC = () => {
                   {user.weight} <span className="text-[10px] font-black text-slate-300 uppercase ml-0.5">kg</span>
                 </p>
               </div>
+              <div className="flex flex-col">
+                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2">基础代谢</p>
+                <div className="flex flex-col">
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">
+                    ~{metabolicInfo.tdee}
+                  </p>
+                  <span className="text-[9px] font-bold text-slate-300 uppercase">kcal/day</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -96,6 +114,15 @@ const Profile: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Change Password Button */}
+        <button 
+          onClick={() => navigate('/update-password')}
+          className="w-full flex items-center justify-center gap-3 h-14 rounded-[2rem] bg-white text-slate-700 font-black text-sm active:scale-[0.98] transition-all shadow-sm border border-slate-200"
+        >
+          <span className="material-symbols-outlined text-xl">lock_reset</span>
+          <span className="tracking-widest uppercase">修改密码</span>
+        </button>
 
         {/* Logout Button - Higher Contrast */}
         <button 

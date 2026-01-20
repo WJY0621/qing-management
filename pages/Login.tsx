@@ -86,7 +86,12 @@ const Login: React.FC = () => {
         <div className="flex flex-col">
           <div className="flex justify-between items-center pb-2 pl-1">
             <p className="text-slate-600 text-[11px] font-black uppercase tracking-widest">密码</p>
-            <button className="text-primary text-[11px] font-black hover:opacity-70 transition-opacity">忘记密码？</button>
+            <button 
+              onClick={() => navigate('/forgot-password')}
+              className="text-primary text-[11px] font-black hover:opacity-70 transition-opacity"
+            >
+              忘记密码？
+            </button>
           </div>
           <div className="relative">
             <input
