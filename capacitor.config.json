@@ -1,0 +1,6 @@
+{
+  "appId": "com.qing.management",
+  "appName": "轻管理",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
