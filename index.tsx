@@ -1,6 +1,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import '@fontsource/noto-sans-sc';
+import 'material-symbols';
 import './src/index.css';
 import App from './App.tsx';
 import { registerSW } from 'virtual:pwa-register';

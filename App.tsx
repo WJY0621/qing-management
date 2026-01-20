@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useAppState } from './state.tsx';
+import { SplashScreen } from '@capacitor/splash-screen';
 import ErrorBoundary from './components/ErrorBoundary.tsx';
 import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
@@ -34,6 +35,18 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 const App: React.FC = () => {
+  useEffect(() => {
+    // Hide splash screen when app is mounted
+    const hideSplash = async () => {
+      try {
+        await SplashScreen.hide();
+      } catch (e) {
+        // Ignore errors in non-native environments
+      }
+    };
+    hideSplash();
+  }, []);
+
   return (
     <ErrorBoundary>
       <AppProvider>
