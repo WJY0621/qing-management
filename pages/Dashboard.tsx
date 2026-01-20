@@ -50,6 +50,25 @@ const Dashboard: React.FC = () => {
     };
   }, [user]);
 
+  // Separate calculation for metabolic rate to keep the logic clean
+  const metabolicInfo = useMemo(() => {
+    if (!user) return null;
+
+    // Mifflin-St Jeor Equation
+    // BMR = 10 * weight(kg) + 6.25 * height(cm) - 5 * age(y) + s (s = +5 for men, -161 for women)
+    const s = user.gender === 'MALE' ? 5 : -161;
+    const bmr = 10 * user.weight + 6.25 * user.height - 5 * user.age + s;
+
+    // TDEE = BMR * Activity Multiplier
+    // Assuming "Sedentary" (1.2) as baseline for "normal daily life" without specific exercise
+    const tdee = bmr * 1.2;
+
+    return {
+      bmr: Math.round(bmr),
+      tdee: Math.round(tdee)
+    };
+  }, [user]);
+
   if (!user || !recommendation) return null;
 
   const radius = 75;
