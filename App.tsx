@@ -15,6 +15,11 @@ import Profile from './pages/Profile.tsx';
 import ProfileEditor from './pages/ProfileEditor.tsx';
 import ForgotPassword from './pages/ForgotPassword.tsx';
 import UpdatePassword from './pages/UpdatePassword.tsx';
+import AdminLogin from './pages/admin/AdminLogin.tsx';
+import AdminLayout from './pages/admin/AdminLayout.tsx';
+import AdminDashboard from './pages/admin/AdminDashboard.tsx';
+import UserManagement from './pages/admin/UserManagement.tsx';
+import RecipeManagement from './pages/admin/RecipeManagement.tsx';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoggedIn, isLoading } = useAppState();
