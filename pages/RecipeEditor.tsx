@@ -130,7 +130,10 @@ const RecipeEditor: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-[#f8fbff] max-w-md mx-auto relative overflow-hidden">
-      <header className="flex items-center justify-between px-6 py-4 bg-white">
+      <header 
+        className="flex items-center justify-between px-6 pb-4 bg-white transition-all"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}
+      >
         <button onClick={() => navigate('/recipes')} className="text-slate-400 text-sm font-medium">取消</button>
         <h2 className="text-lg font-bold text-slate-800">{existingRecipe ? '编辑食谱' : '新建食谱'}</h2>
         <button onClick={handleSave} className="text-primary text-sm font-bold">完成</button>
