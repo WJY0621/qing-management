@@ -1,9 +1,10 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppState } from '../state';
 import { Recipe, RecipeIngredient, Ingredient } from '../types';
 import { MOCK_INGREDIENTS } from '../constants';
+import { searchIngredients } from '../services/dataService';
 
 const RecipeEditor: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +18,66 @@ const RecipeEditor: React.FC = () => {
   const [notes, setNotes] = useState(existingRecipe?.notes || '');
   const [showPicker, setShowPicker] = useState(false);
   const [search, setSearch] = useState('');
+  // Hybrid ingredients list (Local Mock + Remote DB)
+  const [displayIngredients, setDisplayIngredients] = useState<Ingredient[]>(MOCK_INGREDIENTS);
+  const [isSearching, setIsSearching] = useState(false);
+
+  // Search Effect
+  useEffect(() => {
+    let isMounted = true;
+
+    const performSearch = async () => {
+      // 1. Local Filter (Instant)
+      const localResults = MOCK_INGREDIENTS.filter(i => 
+        i.name.toLowerCase().includes(search.toLowerCase())
+      );
+
+      // If search is empty, just show local list (or maybe top 20 local)
+      if (!search.trim()) {
+        if (isMounted) {
+            setDisplayIngredients(MOCK_INGREDIENTS);
+            setIsSearching(false);
+        }
+        return;
+      }
+
+      setIsSearching(true);
+
+      try {
+        // 2. Remote Search (Supabase)
+        const remoteResults = await searchIngredients(search);
+        
+        if (isMounted) {
+          // 3. Merge results (Remote first, then Local, remove duplicates by ID or Name)
+          const merged = [...remoteResults];
+          
+          localResults.forEach(local => {
+            // Check if already exists in remote results (by name or id)
+            const exists = merged.some(r => r.name === local.name || r.id === local.id);
+            if (!exists) {
+              merged.push(local);
+            }
+          });
+          
+          setDisplayIngredients(merged);
+        }
+      } catch (error) {
+        console.error("Search failed", error);
+        // Fallback to local if remote fails
+        if (isMounted) setDisplayIngredients(localResults);
+      } finally {
+        if (isMounted) setIsSearching(false);
+      }
+    };
+
+    // Debounce remote search slightly to avoid too many requests
+    const timeoutId = setTimeout(performSearch, 300);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, [search]);
 
   const nutrition = useMemo(() => {
     return ingredients.reduce((acc, curr) => ({
@@ -48,8 +109,6 @@ const RecipeEditor: React.FC = () => {
     }
     navigate('/recipes');
   };
-
-  const filteredIngredients = MOCK_INGREDIENTS.filter(i => i.name.includes(search));
 
   const addIngredient = (ing: Ingredient) => {
     if (!ingredients.find(i => i.id === ing.id)) {
@@ -195,7 +254,13 @@ const RecipeEditor: React.FC = () => {
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar bg-slate-50/30">
-              {filteredIngredients.map(ing => (
+              {isSearching && (
+                 <div className="flex items-center justify-center py-4 text-slate-400 gap-2">
+                   <div className="size-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                   <span className="text-xs font-bold">正在云端搜索...</span>
+                 </div>
+              )}
+              {displayIngredients.map(ing => (
                 <div key={ing.id} className="flex items-center justify-between p-5 bg-white rounded-[28px] border border-slate-50 shadow-sm">
                   <div className="flex-1">
                     <h4 className="font-bold text-slate-800 text-lg mb-1">{ing.name}</h4>
